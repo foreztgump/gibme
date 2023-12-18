@@ -1,6 +1,7 @@
 lxml
-beautiufulsoup4
+beautifulsoup4
 httpx
 colorama
 rapidfuzz
 prettytable
+PyYAML
