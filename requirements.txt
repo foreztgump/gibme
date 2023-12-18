@@ -1,0 +1,6 @@
+lxml
+beautiufulsoup4
+httpx
+colorama
+rapidfuzz
+prettytable
