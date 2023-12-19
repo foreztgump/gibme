@@ -4,7 +4,7 @@ import json
 import tempfile
 import re
 
-from .colors import colors
+from rich.console import Console
 from pathlib import Path
 
 # from git import Repo, Blob
@@ -172,6 +172,7 @@ def _fuzz_result(name: str, choice: list, fuzz_type: str):
             choice,
             scorer=fuzz.token_set_ratio,
             limit=10,
+            score_cutoff=10,
             processor=fuzz_utils.default_process,
         )
         high_score_matches = [match for match in fuzz_similarity if match[1] >= 70.0]
@@ -180,13 +181,12 @@ def _fuzz_result(name: str, choice: list, fuzz_type: str):
     highest_similarity = max(fuzz_similarity, key=lambda x: x[1])
     if highest_similarity[1] > 90:
         return highest_similarity[0]
-    print(
-        colors("Did you mean one of these?", "yellow")
+    console = Console()
+    console.print(
+        "Did you mean one of these?", style="yellow"
     )  # Print the question in yellow
     for name, similarity, index in fuzz_similarity:
         # Print the name in green and the similarity in cyan
-        print(
-            colors(f"{name}:", "green"),
-            colors(f"{format(similarity, '.1f')}% similarity", "cyan"),
-        )
-        exit(0)
+        console.print(f"{name}:", style="green", end=" ")
+        console.print(f"{format(similarity, '.1f')}% similarity", style="cyan")
+    exit(0)

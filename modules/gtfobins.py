@@ -4,8 +4,9 @@ import json
 from yaml import load_all, SafeLoader
 from bs4 import BeautifulSoup
 from pathlib import Path
-from .colors import colors
-from prettytable import PrettyTable, ALL
+from rich import print
+from rich.table import Table
+from rich.console import Console
 
 
 def get_bins():
@@ -18,7 +19,8 @@ def get_bins():
             return [i.text for i in tds]
 
     except Exception as e:
-        print(colors(f"[-] Error: {e}", "red"))
+        console = Console()
+        console.print(f"[-] Error: {e}", style="bold red")
         exit(1)
 
 
@@ -36,23 +38,22 @@ def _bins_list(f):
     try:
         data = json.load(f)
         bins = data["bins"]
-        table = PrettyTable()
-        table.hrules = ALL
-        table.field_names = [colors(f"Binaries {i+1}", "green") for i in range(10)]
+        table = Table(show_header=True, header_style="bold green")
+        table.add_column("Binaries", style="green")
 
         # Group the binaries into chunks of 10
         for i in range(0, len(bins), 10):
             row = bins[i : i + 10]
             row += [""] * (10 - len(row))
-            table.add_row(row)
-        print(table)
+            table.add_row(*row)
+        console = Console()
+        console.print(table)
     except Exception as e:
         if isinstance(e, json.JSONDecodeError):
-            print(
-                colors(
-                    "[-] Error: Invalid JSON file - Please run 'gibme -update' to update modules",
-                    "red",
-                )
+            console = Console()
+            console.print(
+                "[-] Error: Invalid JSON file - Please run 'gibme -update' to update modules",
+                style="bold red",
             )
 
 
@@ -71,16 +72,16 @@ def _gtfobins_parse_info(client, bin_name):
     response = client.get(raw_url)
     data = list(load_all(response.text, Loader=SafeLoader))[0]
 
+    console = Console()
     for function, codes in data["functions"].items():
-        print(colors("Type:", "white"), colors(f"\t\t{function}", "red"))
+        console.print(f"[white]Type:[/white] [red]{function}[/red]")
 
         for code in codes:
             if description := code.get("description", None):
-                print(
-                    colors("Description:", "white"),
-                    colors(f"\t{description}", "yellow"),
+                console.print(
+                    f"[white]Description:[/white] [yellow]{description}[/yellow]"
                 )
 
             code_lines = code["code"].split("\n")
             formatted_code = "\n".join("\t\t" + line for line in code_lines)
-            print(colors("Code:", "white"), colors(formatted_code, "green"))
+            console.print(f"[white]Code:[/white] [green]{formatted_code}[/green]")

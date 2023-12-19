@@ -1,7 +1,7 @@
 lxml
 beautifulsoup4
 httpx
-colorama
 rapidfuzz
 prettytable
 PyYAML
+rich
