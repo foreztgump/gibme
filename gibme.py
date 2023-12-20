@@ -4,7 +4,7 @@ import argparse
 import signal
 import sys
 
-from modules.utils import initialize_settings, update_gibme, check_init, fuzz_name
+from modules.utils import update_gibme, check_init, fuzz_name
 from modules.gtfobins import list_bins, gtfobins_info
 from modules.lolbas import list_exe, lolbas_info
 from modules.shellgen import generate_shell
@@ -55,7 +55,13 @@ def main():
         help="List all the available binaries or shell.",
         choices=["bins", "exe", "shell"],
     )
-    group.add_argument("-u", "--update", help="Update Gibme.")
+    parser.add_argument(
+        "-u",
+        "--update",
+        required=False,
+        action='store_true',
+        help="Update the binaries and executables.",
+    )
     parser.add_argument(
         "-s",
         "--shell",
@@ -117,7 +123,7 @@ def main():
 
     if args.exe:
         name = fuzz_name(name=args.exe, type_str="lolbas", choice_path=home_dir)
-        lolbas_info(name)
+        lolbas_info(name, home_dir)
 
     if args.list == "bins":
         list_bins(home_dir)

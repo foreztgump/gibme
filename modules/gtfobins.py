@@ -4,9 +4,9 @@ import json
 from yaml import load_all, SafeLoader
 from bs4 import BeautifulSoup
 from pathlib import Path
-from rich import print
 from rich.table import Table
 from rich.console import Console
+from rich.text import Text
 
 
 def get_bins():
@@ -38,14 +38,14 @@ def _bins_list(f):
     try:
         data = json.load(f)
         bins = data["bins"]
-        table = Table(show_header=True, header_style="bold green")
-        table.add_column("Binaries", style="green")
+        table = Table(show_header=False, header_style="bold magenta", title="\nBinaries List")
+        for _ in range(7): 
+            table.add_column(justify="center")
 
-        # Group the binaries into chunks of 10
-        for i in range(0, len(bins), 10):
-            row = bins[i : i + 10]
-            row += [""] * (10 - len(row))
-            table.add_row(*row)
+        for i in range(0, len(bins), 8):
+            row = bins[i : i + 8]
+            row += [""] * (8 - len(row))
+            table.add_row(*[Text(x, style="green") for x in row]) 
         console = Console()
         console.print(table)
     except Exception as e:
@@ -74,12 +74,12 @@ def _gtfobins_parse_info(client, bin_name):
 
     console = Console()
     for function, codes in data["functions"].items():
-        console.print(f"[white]Type:[/white] [red]{function}[/red]")
+        console.print(f"[white]Type:[/white] [red]\t\t{function}[/red]")
 
         for code in codes:
             if description := code.get("description", None):
                 console.print(
-                    f"[white]Description:[/white] [yellow]{description}[/yellow]"
+                    f"[white]Description:[/white] [yellow]\t{description}[/yellow]"
                 )
 
             code_lines = code["code"].split("\n")
