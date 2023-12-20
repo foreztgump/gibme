@@ -9,6 +9,7 @@ from modules.gtfobins import list_bins, gtfobins_info
 from modules.lolbas import list_exe, lolbas_info
 from modules.shellgen import generate_shell
 from modules.shell_data import listenerCommands, shells
+from modules.cheatsheet import list_notes, print_note
 from rich import print
 
 
@@ -53,13 +54,21 @@ def main():
         "--list",
         metavar="<list>",
         help="List all the available binaries or shell.",
-        choices=["bins", "exe", "shell"],
+        choices=["bins", "exe", "shell", "notes"],
+    )
+    group.add_argument(
+        "-n",
+        "--notes",
+        nargs=2,
+        metavar=("<default or custom>", "<filename>"),
+        required=False,
+        help="Print the note. Provide either 'default' or 'custom' as the first argument and the file name as the second argument.",
     )
     parser.add_argument(
         "-u",
         "--update",
         required=False,
-        action='store_true',
+        action="store_true",
         help="Update the binaries and executables.",
     )
     parser.add_argument(
@@ -117,7 +126,7 @@ def main():
         "-v",
         "--version",
         required=False,
-        action='store_true',
+        action="store_true",
         help="Show version.",
     )
 
@@ -126,11 +135,11 @@ def main():
     home_dir = check_init()
 
     if args.bins:
-        name = fuzz_name(name=args.bins, type_str="gtfobins", choice_path=home_dir)
+        name = fuzz_name(name=args.bins, type_str="gtfobins", home_dir=home_dir)
         gtfobins_info(name)
 
     if args.exe:
-        name = fuzz_name(name=args.exe, type_str="lolbas", choice_path=home_dir)
+        name = fuzz_name(name=args.exe, type_str="lolbas", home_dir=home_dir)
         lolbas_info(name, home_dir)
 
     if args.list == "bins":
@@ -139,6 +148,8 @@ def main():
         list_exe(home_dir)
     elif args.list == "shell":
         print("Shell")
+    elif args.list == "notes":
+        list_notes(home_dir)
 
     if args.update:
         update_gibme()
@@ -206,6 +217,15 @@ def main():
             shell=None,
             listener=args.listener,
         )
+
+    if args.notes:
+        name = fuzz_name(
+            name=args.notes[1],
+            type_str="notes",
+            choice_path=args.notes[0],
+            home_dir=home_dir,
+        )
+        print_note(home_dir=home_dir, note_name=name[0], note_mode=args.notes[0])
 
 
 if __name__ == "__main__":
