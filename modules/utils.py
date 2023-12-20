@@ -41,6 +41,11 @@ def initialize_settings():
         lolbas_file.touch()
         update_lolbas(lolbas_file)
 
+    note_dir = gibnme_dir / "notes"
+    if not note_dir.exists():
+        note_dir.mkdir()
+        update_notes(note_dir)
+
     settings_file = gibnme_dir / "settings.json"
     if not settings_file.exists():
         settings_file.touch()
@@ -48,6 +53,8 @@ def initialize_settings():
             data = {
                 "gtfobins_file": str(gtfobins_file),
                 "lolbas_file": str(lolbas_file),
+                "note_dir": str(note_dir),
+                "custom_notes_dir": "",
             }
             json.dump(data, f)
 
@@ -71,6 +78,11 @@ def initialize_settings():
 #                         shutil.copy(sub_item.abspath, gibnme_dir / 'gtfobins' / sub_item.name)
 
 #         repo.close()
+    
+
+
+def update_notes(note_dir: Path):
+    pass
 
 
 def update_lolbas(lolbas_json_file: Path):

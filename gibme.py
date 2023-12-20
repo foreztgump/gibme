@@ -113,6 +113,14 @@ def main():
         help="Specify listener for reverse shell.",
         choices=[command[0] for command in listenerCommands],
     )
+    parser.add_argument(
+        "-v",
+        "--version",
+        required=False,
+        action='store_true',
+        help="Show version.",
+    )
+
     args = parser.parse_args()
 
     home_dir = check_init()
