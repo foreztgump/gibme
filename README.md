@@ -14,7 +14,7 @@ Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so
 
 ## Getting Started
 
-The easiest way to get started is to download the precompiled binary for Linux. You can find it in the [release section](https://github.com/foreztgump/gibme/releases/download/0.0.1/gibme) of the Gibme repository.
+The easiest way to get started is to download the precompiled binary for Linux. You can find it in the [release section](https://github.com/foreztgump/gibme/releases) of the Gibme repository.
 
 After downloading the binary, you'll need to make it executable and move it to a directory in your PATH. Here's how you can do that:
 
