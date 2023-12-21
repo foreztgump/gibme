@@ -49,6 +49,8 @@ place-holder-picture
 - Spotted a bug? Let me know! Report it and I'll get to squashing.
 - Any thoughts or ideas? Open an issue, I'm all ears!
 
+## Upcoming Tasks
+- Code refactoring is on the horizon!
 
 ## License
 
