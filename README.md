@@ -14,7 +14,22 @@ Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so
 
 ## Getting Started
 
-The simplest route is to grab the binary file from the release section right here in the Gibme repository.
+The easiest way to get started is to download the precompiled binary for Linux. You can find it in the [release section](https://github.com/foreztgump/gibme/releases/download/0.0.1/gibme) of the Gibme repository.
+
+After downloading the binary, you'll need to make it executable and move it to a directory in your PATH. Here's how you can do that:
+
+```sh
+# Navigate to the directory where you downloaded the binary
+cd /path/to/download/directory
+
+# Make the binary executable
+chmod +x gibme
+
+# Move the binary to a directory in your PATH, e.g., /usr/local/bin
+sudo mv gibme /usr/local/bin/
+
+Now, you should be able to run Gibme from anywhere in your terminal by simply typing gibme.
+```
 
 For those who prefer a hands-on approach, you can clone the repository and set up the required Python packages:
 
@@ -22,6 +37,22 @@ For those who prefer a hands-on approach, you can clone the repository and set u
 git clone https://github.com/foreztgump/gibme.git
 cd gibme
 pip install -r requirements.txt
+```
+
+## Configuration
+
+When you first run Gibme, it will create a `.gibme` directory in your home folder. This directory contains a `settings.json` file, which is used to store your personal configurations.
+
+One of the configurations you can set is the path to your custom note folder. This allows Gibme to load your personal notes, making it a truly personalized CLI tool.
+
+To set the path to your custom note folder, open the `settings.json` file in a text editor and set the value of the `custom_notes_dir` key to the path of your note folder. Here's an example:
+
+```json
+{
+  "custom_notes_dir": "/path/to/your/notes_folder"
+}
+
+Replace /path/to/your/notes with the actual path to your note folder. After saving the settings.json file, Gibme will load your custom notes the next time you run it. 
 ```
 
 ## How to Use
