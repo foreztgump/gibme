@@ -10,6 +10,7 @@ from .shell_data import (
     listenerCommands,
 )
 from rich.console import Console
+from rich.table import Table
 from rich.text import Text
 
 
@@ -185,9 +186,26 @@ def encode_str(text: str, encode_type: str):
         return urllib.parse.quote(text)
 
 
-def list_shell():
-    pass
+def list_shells():
+    console = Console()
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("Type", style="yellow")
+    table.add_column("Shell Name", style="cyan")
+    table.add_column("Meta", style="blue")
 
+    for shell_type, shells in [("Reverse", reverse_shell), ("Bind", bind_shell), ("Hoax", hoax_shell), ("MSFVenom", msfvenom)]:
+        for shell in shells:
+            table.add_row(shell_type, shell["name"], ", ".join(shell["meta"]))
 
-def list_listener():
-    pass
+    console.print(table)
+
+def list_listeners():
+    console = Console()
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("Listener Name", style="cyan")
+    table.add_column("Command", style="green")
+
+    for listener in listenerCommands:
+        table.add_row(listener[0], listener[1])
+
+    console.print(table)

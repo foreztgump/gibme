@@ -1,9 +1,7 @@
 import json
 import re
 
-from rich.console import Console
 from pathlib import Path
-
 # from git import Repo, Blob
 from .gtfobins import get_bins
 from .lolbas import get_exe
@@ -37,12 +35,12 @@ def initialize_settings():
     gtfobins_file = gibnme_dir / "gtfobins.json"
     if not gtfobins_file.exists():
         gtfobins_file.touch()
-        # update_gtfo(gtfobins_file)
+        update_gtfo(gtfobins_file)
 
     lolbas_file = gibnme_dir / "lolbas.json"
     if not lolbas_file.exists():
         lolbas_file.touch()
-        # update_lolbas(lolbas_file)
+        update_lolbas(lolbas_file)
 
     note_dir = gibnme_dir / "default_notes"
     if not note_dir.exists():
@@ -132,6 +130,7 @@ def update_gibme():
 
     console.print("[bold cyan]Updating default notes...[/bold cyan]")
     update_notes(Path(settings["default_notes_dir"]))
+
     console.print("[bold green]Default notes updated successfully![/bold green]")
     console.print("[bold green]Gibme updated successfully![/bold green]")
 

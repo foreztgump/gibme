@@ -7,7 +7,7 @@ import sys
 from modules.utils import update_gibme, check_init, fuzz_name
 from modules.gtfobins import list_bins, gtfobins_info
 from modules.lolbas import list_exe, lolbas_info
-from modules.shellgen import generate_shell
+from modules.shellgen import generate_shell, list_listeners, list_shells
 from modules.shell_data import listenerCommands, shells
 from modules.cheatsheet import list_notes, print_note
 from rich import print
@@ -23,10 +23,15 @@ def main():
         description="gibme - Your CLI tool for generating shells, searching binaries, and more.",
         epilog="""
     Examples:
-    python3 gibme.py -b ls    Search for the binary 'ls' on GTFOBins.
-    python3 gibme.py -e cmd   Search for the executable 'cmd' on LOLBAS.
-    python3 gibme.py -rs bash Generate a reverse shell for bash.
-    python3 gibme.py -u       Update Gibme.
+    gibme -u        Update Gibme.
+    gibme -b less   Search for the binary 'less' on GTFOBins.
+    gibme -e cmd    Search for the executable 'cmd' on LOLBAS.
+    gibme -rs bash  Generate a reverse shell for bash.
+    gibme -bs bash  Generate a bind shell for bash.
+    gibme -rs bash -i 10.10.11.12 -p 9000 -os linux -s /bin/bash -en base64 -l nc   Generate a reverse shell for bash with the specified options.
+    gibme -n default "Active Directory"     Print the default note for "Active Directory".
+    gibme -ls bins  List all the available binaries.
+    gibme -ls notes List all the available notes.
     """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -54,7 +59,7 @@ def main():
         "--list",
         metavar="<list>",
         help="List all the available binaries or shell.",
-        choices=["bins", "exe", "shell", "notes"],
+        choices=["bins", "exe", "reverse_shells", "listeners", "notes"],
     )
     group.add_argument(
         "-n",
@@ -136,18 +141,20 @@ def main():
 
     if args.bins:
         name = fuzz_name(name=args.bins, type_str="gtfobins", home_dir=home_dir)
-        gtfobins_info(name)
+        gtfobins_info(str(name[0][0]))
 
     if args.exe:
         name = fuzz_name(name=args.exe, type_str="lolbas", home_dir=home_dir)
-        lolbas_info(name, home_dir)
+        lolbas_info(str(name[0][0]), home_dir)
 
     if args.list == "bins":
         list_bins(home_dir)
     elif args.list == "exe":
         list_exe(home_dir)
-    elif args.list == "shell":
-        print("Shell")
+    elif args.list == "reverse_shells":
+        list_shells()
+    elif args.list == "listeners":
+        list_listeners()
     elif args.list == "notes":
         list_notes(home_dir)
 
@@ -227,6 +234,8 @@ def main():
         )
         print_note(home_dir=home_dir, note_name=name[0], note_mode=args.notes[0])
 
+    if args.version:
+        print("[bold cyan]Gibme v0.0.1[/bold cyan]")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
