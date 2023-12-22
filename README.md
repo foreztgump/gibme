@@ -2,6 +2,8 @@
 
 Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so much more. With the power of GTFOBins and LOLBAS at its fingertips, it's like having your own personal information superhero right in your terminal.
 
+![Gibme Showcase](./imgs/gibme.gif)
+
 ## Features
 
 - Binaries from GTFOBins? Gibme got 'em! And it'll print them directly to your CLI, no fuss.
