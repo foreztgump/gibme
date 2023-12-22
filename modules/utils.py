@@ -4,9 +4,11 @@ import sys
 
 from pathlib import Path
 
+
 # from git import Repo, Blob
 from .gtfobins import get_bins
 from .lolbas import get_exe
+from .cve import CVE
 from rich.console import Console
 from rich.prompt import Prompt
 from .shell_data import reverse_shell, bind_shell, hoax_shell, msfvenom
@@ -66,6 +68,11 @@ def initialize_settings():
         note_dir.mkdir()
         update_notes(note_dir)
 
+    cve_poc_file = gibnme_dir / "cve_poc.json"
+    if not cve_poc_file.exists():
+        cve_poc_file.touch()
+        update_cve_poc(cve_poc_file)
+
     settings_file = gibnme_dir / "settings.json"
     if not settings_file.exists():
         settings_file.touch()
@@ -73,6 +80,7 @@ def initialize_settings():
             data = {
                 "gtfobins_file": str(gtfobins_file),
                 "lolbas_file": str(lolbas_file),
+                "cve_poc_file": str(cve_poc_file),
                 "default_notes_dir": str(note_dir),
                 "custom_notes_dir": "None",
             }
@@ -207,6 +215,14 @@ def update_gibme():
 
     console.print("[bold green]Default notes updated successfully![/bold green]")
     console.print("[bold green]Gibme updated successfully![/bold green]")
+
+
+def update_cve_poc(cve_poc_file: Path):
+    if not cve_poc_file.exists():
+        initialize_settings()
+
+    cve_poc = CVE()
+    data = cve_poc.get_cve_poc()
 
 
 def fuzz_name(
