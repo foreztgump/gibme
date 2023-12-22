@@ -95,12 +95,35 @@ default_notes_links = [
 
 
 async def download_file(url: str, dest: Path):
+    """
+    Downloads a file from the specified URL and saves it to the destination path.
+
+    Args:
+        url (str): The URL of the file to download.
+        dest (Path): The destination path where the file will be saved.
+
+    Raises:
+        Any exceptions that occur during the download process.
+
+    Returns:
+        None
+    """
     async with httpx.AsyncClient() as session:
         response = await session.get(url)
         dest.write_text(response.text, encoding="utf-8")
 
 
 async def get_notes(note_dir: Path, notes: list):
+    """
+    Downloads notes from a list of URLs and saves them to the specified directory.
+
+    Args:
+        note_dir (Path): The directory where the notes will be saved.
+        notes (list): A list of dictionaries containing the notes' information, including the URL and filename.
+
+    Returns:
+        None
+    """
     tasks = []
     for note in notes:
         url = note["link"]
@@ -111,10 +134,27 @@ async def get_notes(note_dir: Path, notes: list):
 
 
 def download_default_notes(note_dir: Path):
+    """
+    Downloads default notes from the specified directory.
+
+    Args:
+        note_dir (Path): The directory where the notes will be downloaded.
+
+    Returns:
+        None
+    """
     asyncio.run(get_notes(note_dir, default_notes_links))
 
 
 def print_note(home_dir: Path, note_name: str, note_mode: str):
+    """
+    Print the contents of a note file.
+
+    Args:
+        home_dir (Path): The home directory.
+        note_name (str): The name of the note file.
+        note_mode (str): The mode of the note file (default or custom).
+    """
     settings_file = home_dir / "settings.json"
     with settings_file.open() as f:
         settings = json.load(f)
@@ -162,6 +202,15 @@ def print_note(home_dir: Path, note_name: str, note_mode: str):
 
 
 def list_notes(home_dir: Path):
+    """
+    List the notes in the default and custom directories.
+
+    Args:
+        home_dir (Path): The home directory where the settings file is located.
+
+    Returns:
+        None
+    """
     # get default_notes_dir and custom_notes_dir from settings.json
     settings_file = home_dir / "settings.json"
     with settings_file.open() as f:
@@ -189,6 +238,16 @@ def list_notes(home_dir: Path):
 
 
 def _get_notes_tree(directory: Path, header_style: str) -> Tree:
+    """
+    Generate a tree structure representing the notes directory.
+
+    Args:
+        directory (Path): The directory to generate the tree from.
+        header_style (str): The style of the header for the tree.
+
+    Returns:
+        Tree: The generated tree structure.
+    """
     # Walk the custom directory and add all the folders and files to the tree
     custom_directory_dict = walk_directory(directory)
     result = Tree(f"{header_style}{directory})")
@@ -200,4 +259,16 @@ def _get_notes_tree(directory: Path, header_style: str) -> Tree:
 
 
 def walk_directory(directory: Path) -> dict:
+    """
+    Recursively walks through a directory and returns a dictionary
+    containing the names of the subdirectories as keys and a list of
+    files in each subdirectory as values.
+
+    Args:
+        directory (Path): The directory to walk through.
+
+    Returns:
+        dict: A dictionary containing the names of the subdirectories
+        as keys and a list of files in each subdirectory as values.
+    """
     return {Path(root).name: files for root, dirs, files in os.walk(directory)}

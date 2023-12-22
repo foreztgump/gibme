@@ -24,6 +24,22 @@ def generate_shell(
     encode: str = None,
     listener: str = None,
 ):
+    """
+    Generate shell commands based on the given parameters.
+
+    Args:
+        shell_names (list): List of shell names.
+        shell_type (str): Type of shell (reverse, bind, hoax, msfvenom).
+        ip_address (str): IP address for the shell.
+        port_number (str): Port number for the shell.
+        operating_system (str): Operating system for the shell.
+        shell (str): Shell type (e.g., bash, powershell, python).
+        encode (str, optional): Encoding type for the shell command. Defaults to None.
+        listener (str, optional): Listener name for reverse shell. Defaults to None.
+
+    Returns:
+        None
+    """
     listener_text = None
     if listener:
         for each_listener in listenerCommands:
@@ -139,6 +155,16 @@ def _print_shell(
     listener_text: str = None,
     encoded: str = None,
 ):
+    """
+    Print the details of a reverse shell.
+
+    Args:
+        name (str): The name of the reverse shell.
+        shell_command (str): The shell command to execute.
+        os_string (str): The operating system string.
+        listener_text (str, optional): The listener command. Defaults to None.
+        encoded (str, optional): The encoded shell command. Defaults to None.
+    """
     # Initialize console
     console = Console()
 
@@ -180,26 +206,65 @@ def _print_shell(
 
 
 def encode_str(text: str, encode_type: str):
+    """
+    Encode a string using the specified encoding type.
+
+    Args:
+        text (str): The string to be encoded.
+        encode_type (str): The encoding type to be used. Valid options are "base64" and "url".
+
+    Returns:
+        str: The encoded string.
+
+    Raises:
+        ValueError: If an invalid encoding type is provided.
+    """
     if encode_type == "base64":
         return base64.b64encode(text.encode()).decode()
     elif encode_type == "url":
         return urllib.parse.quote(text)
+    else:
+        raise ValueError("Invalid encoding type. Valid options are 'base64' and 'url'.")
 
 
 def list_shells():
+    """
+    List all available shells.
+
+    This function prints a table of available shells, including their type, name, and metadata.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     console = Console()
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Type", style="yellow")
     table.add_column("Shell Name", style="cyan")
     table.add_column("Meta", style="blue")
 
-    for shell_type, shells in [("Reverse", reverse_shell), ("Bind", bind_shell), ("Hoax", hoax_shell), ("MSFVenom", msfvenom)]:
+    for shell_type, shells in [
+        ("Reverse", reverse_shell),
+        ("Bind", bind_shell),
+        ("Hoax", hoax_shell),
+        ("MSFVenom", msfvenom),
+    ]:
         for shell in shells:
             table.add_row(shell_type, shell["name"], ", ".join(shell["meta"]))
 
     console.print(table)
 
+
 def list_listeners():
+    """
+    Display a table of listeners and their corresponding commands.
+
+    This function prints a table with two columns: Listener Name and Command.
+    It iterates over the `listenerCommands` list and adds each listener's name
+    and command to the table. The table is then printed to the console.
+    """
     console = Console()
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Listener Name", style="cyan")

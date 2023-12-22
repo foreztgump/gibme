@@ -11,6 +11,12 @@ from rich.text import Text
 
 
 def get_bins():
+    """
+    Retrieves a list of binary names from the gtfobins website.
+
+    Returns:
+        list: A list of binary names.
+    """
     try:
         url = "https://gtfobins.github.io/"
         with httpx.Client() as client:
@@ -26,6 +32,15 @@ def get_bins():
 
 
 def list_bins(home_dir: Path):
+    """
+    Lists the bins from the gtfobins file specified in the settings.
+
+    Args:
+        home_dir (Path): The home directory path.
+
+    Returns:
+        None
+    """
     settings_file = home_dir / "settings.json"
     with open(settings_file, "r") as f:
         settings = json.load(f)
@@ -36,17 +51,29 @@ def list_bins(home_dir: Path):
 
 
 def _bins_list(f):
+    """
+    Display a table of binaries from a JSON file.
+
+    Args:
+        f (file): The JSON file containing the binary data.
+
+    Raises:
+        json.JSONDecodeError: If the JSON file is invalid.
+
+    """
     try:
         data = json.load(f)
         bins = data["bins"]
-        table = Table(show_header=False, header_style="bold magenta", title="\nBinaries List")
-        for _ in range(7): 
+        table = Table(
+            show_header=False, header_style="bold magenta", title="\nBinaries List"
+        )
+        for _ in range(7):
             table.add_column(justify="center")
 
         for i in range(0, len(bins), 8):
             row = bins[i : i + 8]
             row += [""] * (8 - len(row))
-            table.add_row(*[Text(x, style="green") for x in row]) 
+            table.add_row(*[Text(x, style="green") for x in row])
         console = Console()
         console.print(table)
     except Exception as e:
@@ -59,6 +86,18 @@ def _bins_list(f):
 
 
 def gtfobins_info(bin_name: str):
+    """
+    Retrieves information about a specific binary from the GTFOBins website.
+
+    Args:
+        bin_name (str): The name of the binary to retrieve information for.
+
+    Raises:
+        Exception: If an error occurs during the retrieval process.
+
+    Returns:
+        None
+    """
     bin_name = bin_name.lower()
 
     try:
@@ -69,6 +108,16 @@ def gtfobins_info(bin_name: str):
 
 
 def _gtfobins_parse_info(client, bin_name):
+    """
+    Parse information about a specific GTFOBin.
+
+    Args:
+        client (object): The HTTP client used to make the request.
+        bin_name (str): The name of the GTFOBin.
+
+    Returns:
+        None
+    """
     raw_url = f"https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/{bin_name}.md"
     response = client.get(raw_url)
     data = list(load_all(response.text, Loader=SafeLoader))[0]

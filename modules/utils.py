@@ -3,6 +3,7 @@ import re
 import sys
 
 from pathlib import Path
+
 # from git import Repo, Blob
 from .gtfobins import get_bins
 from .lolbas import get_exe
@@ -14,9 +15,17 @@ from rapidfuzz import process, fuzz, utils as fuzz_utils
 
 
 def check_init():
+    """
+    Check if the gibme directory and settings file exist.
+    If not, initialize them.
+
+    Returns:
+        Path: The path to the gibme directory.
+    """
     home_dir = Path.home()
     gibnme_dir = home_dir / ".gibme"
     settings_file = home_dir / ".gibme/settings.json"
+
     if not gibnme_dir.exists():
         initialize_settings()
 
@@ -27,6 +36,15 @@ def check_init():
 
 
 def initialize_settings():
+    """
+    Initializes the settings for the gibme application.
+
+    This function creates the necessary directories and files for the application's settings,
+    and initializes them with default values if they don't already exist.
+
+    Returns:
+        None
+    """
     print("Initializing settings...")
     home_dir = Path.home()
     gibnme_dir = home_dir / ".gibme"
@@ -83,6 +101,15 @@ def initialize_settings():
 
 
 def update_notes(note_dir: Path):
+    """
+    Updates the notes directory by creating it if it doesn't exist and downloading default notes.
+
+    Args:
+        note_dir (Path): The path to the notes directory.
+
+    Returns:
+        None
+    """
     if not note_dir.exists():
         note_dir.mkdir()
 
@@ -90,6 +117,18 @@ def update_notes(note_dir: Path):
 
 
 def update_lolbas(lolbas_json_file: Path):
+    """
+    Update the LOLBAS JSON file with the chosen executable.
+
+    If the LOLBAS JSON file doesn't exist, initialize the settings.
+    Get the chosen executable and store it in the JSON file.
+
+    Args:
+        lolbas_json_file (Path): The path to the LOLBAS JSON file.
+
+    Returns:
+        None
+    """
     if not lolbas_json_file.exists():
         initialize_settings()
 
@@ -101,6 +140,18 @@ def update_lolbas(lolbas_json_file: Path):
 
 
 def update_gtfo(gtfo_json_file: Path):
+    """
+    Update the GTFO JSON file with the chosen bins.
+
+    If the GTFO JSON file does not exist, initialize the settings.
+    Get the chosen bins and save them to the JSON file.
+
+    Args:
+        gtfo_json_file (Path): The path to the GTFO JSON file.
+
+    Returns:
+        None
+    """
     if not gtfo_json_file.exists():
         initialize_settings()
 
@@ -112,6 +163,28 @@ def update_gtfo(gtfo_json_file: Path):
 
 
 def update_gibme():
+    """
+    Updates the GTFOBins, LOLBAS, and default notes for Gibme.
+
+    This function reads the settings from the settings.json file located in the .gibme directory
+    in the user's home directory. It then updates the GTFOBins, LOLBAS, and default notes based
+    on the file paths specified in the settings.
+
+    After each update, a success message is printed to the console.
+
+    Note: This function assumes that the necessary update functions (update_gtfo, update_lolbas,
+    and update_notes) are defined elsewhere in the code.
+
+    Example usage:
+    >>> update_gibme()
+    [bold cyan]Updating GTFOBins...[/bold cyan]
+    [bold green]GTFOBins updated successfully![/bold green]
+    [bold cyan]Updating LOLBAS...[/bold cyan]
+    [bold green]LOLBAS updated successfully![/bold green]
+    [bold cyan]Updating default notes...[/bold cyan]
+    [bold green]Default notes updated successfully![/bold green]
+    [bold green]Gibme updated successfully![/bold green]
+    """
     console = Console()
     home_dir = Path.home()
     gibnme_dir = home_dir / ".gibme"
@@ -139,6 +212,18 @@ def update_gibme():
 def fuzz_name(
     name: str, type_str: str, home_dir: Path = None, choice_path: Path = None
 ) -> list:
+    """
+    Fuzzes the given name based on the specified type and returns a list of fuzzed results.
+
+    Args:
+        name (str): The name to be fuzzed.
+        type_str (str): The type of fuzzing to be performed.
+        home_dir (Path, optional): The home directory path. Defaults to None.
+        choice_path (Path, optional): The path to the choice file. Defaults to None.
+
+    Returns:
+        list: A list of fuzzed results.
+    """
     if home_dir != None:
         if choice_path == "default":
             settings_file = home_dir / "settings.json"
@@ -195,6 +280,17 @@ def fuzz_name(
 
 
 def _get_notes_fuzz(settings_file, directory_mode: str, name: str):
+    """
+    Retrieves fuzzy search results for a given name from the specified directory. Specifically used for notes.
+
+    Args:
+        settings_file (file): The settings file containing the directory information.
+        directory_mode (str): The mode specifying the type of directory to search in. 'default_notes_dir' or 'custom_notes_dir'.
+        name (str): The name to search for.
+
+    Returns:
+        list: The fuzzy search results for the given name.
+    """
     settings = json.load(settings_file)
     default_note_dir = Path(settings[directory_mode])
     choice_data = walk_directory(default_note_dir)
@@ -209,6 +305,20 @@ def _get_notes_fuzz(settings_file, directory_mode: str, name: str):
 
 
 def _fuzz_result(name: str, choice: list, fuzz_type: str) -> list:
+    """
+    Perform fuzzy matching on the given name against the choices using the specified fuzz type.
+
+    Args:
+        name (str): The name to be matched.
+        choice (list): The list of choices to match against.
+        fuzz_type (str): The type of fuzzy matching to perform. Valid values are "ratio" and "token".
+
+    Returns:
+        list: A list of matches with their similarity scores.
+
+    Raises:
+        None
+    """
     if fuzz_type == "ratio":
         fuzz_similarity = process.extract(
             name,
@@ -249,15 +359,24 @@ def _fuzz_result(name: str, choice: list, fuzz_type: str) -> list:
         return _user_select(fuzz_similarity)
 
 
-def _user_select(notes_list) -> list:
+def _user_select(choice_list: list) -> list:
+    """
+    Prompt the user to select an option from a list.
+
+    Args:
+        choice_list (list): A list of options to choose from.
+
+    Returns:
+        list: A list containing the selected option.
+    """
     console = Console()
-    if len(notes_list) <= 1:
-        return [notes_list[0]]  # Return a list containing the single element
-    options = {str(i): f"{i}. {n[0]}" for i, n in enumerate(notes_list, start=1)}
+    if len(choice_list) <= 1:
+        return [choice_list[0]]  # Return a list containing the single element
+    options = {str(i): f"{i}. {n[0]}" for i, n in enumerate(choice_list, start=1)}
     console.print("[bold cyan]Please choose one of the following options:")
     for option in options.values():
         console.print(f"[bold green]{option}")
     selected = Prompt.ask("Your choice:", choices=options.keys())
     return [
-        notes_list[int(selected) - 1]
+        choice_list[int(selected) - 1]
     ]  # Return a list containing the selected element
