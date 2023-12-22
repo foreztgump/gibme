@@ -201,10 +201,10 @@ def _get_notes_fuzz(settings_file, directory_mode: str, name: str):
     for folder, files in choice_data.items():
         choice.append(folder)
         choice.extend(iter(files))
-    if len(_fuzz_result(name, choice, "token")) > 1:
-        return _user_select(_fuzz_result(name, choice, "token"))
-    else:
-        return _fuzz_result(name, choice, "token")
+    # if len(_fuzz_result(name, choice, "token")) > 1:
+    #     return _user_select(_fuzz_result(name, choice, "token"))
+    # else:
+    return _fuzz_result(name, choice, "token")
 
 
 def _fuzz_result(name: str, choice: list, fuzz_type: str) -> list:
