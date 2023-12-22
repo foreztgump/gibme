@@ -10,7 +10,8 @@ Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so
 - Quick search and print out a note or cheatsheet? Gibme is faster than a caffeinated librarian.
 - Got your own custom notes? Gibme can load them up for you, making it your personalized CLI companion.
 - RapidFuzz integration for swift and effortless searching? Gibme is all over it.
-- Easy updates? Gibme is your maintenance-free buddy.
+- Easy updates.
+- **Coming Soon**: CVE Search with PoC Suggestions - Gibme will soon be able to search for Common Vulnerabilities and Exposures (CVEs) and suggest potential Proof of Concepts (PoCs) for them.
 
 ## Getting Started
 

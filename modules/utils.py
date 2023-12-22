@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 
 from pathlib import Path
 # from git import Repo, Blob
@@ -228,7 +229,7 @@ def _fuzz_result(name: str, choice: list, fuzz_type: str) -> list:
         for name, similarity, index in fuzz_similarity:
             console.print(f"{name}:", style="green", end=" ")
             console.print(f"{format(similarity, '.1f')}% similarity", style="cyan")
-        exit(0)
+        sys.exit(0)
 
     elif fuzz_type == "token":
         fuzz_similarity = process.extract(

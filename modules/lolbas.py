@@ -1,6 +1,7 @@
 import httpx
 import json
 import re
+import sys
 
 from yaml import load_all, SafeLoader
 from bs4 import BeautifulSoup
@@ -26,7 +27,7 @@ def get_exe():
     except Exception as e:
         console = Console()
         console.print(f"[-] Error: {e}", style="red")
-        exit(1)
+        sys.exit(0)
 
 
 def list_exe(home_dir: Path):
@@ -70,7 +71,7 @@ def lolbas_info(exe_name: str, home_dir: Path):
                 f"[-] Error: {exe_name} is not in the list of executables. Please run 'gibme -update' to update modules",
                 style="bold red",
             )
-            exit(1)
+            sys.exit(0)
         else:
             exe_name = exe[exe_name] 
             if "OtherMSBinaries" not in exe_name:

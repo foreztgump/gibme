@@ -3,6 +3,7 @@ import asyncio
 import json
 import platform
 import os
+import sys
 
 from pathlib import Path
 from rich.console import Console
@@ -144,7 +145,7 @@ def print_note(home_dir: Path, note_name: str, note_mode: str):
         console.print(
             f"[bold red]Error: [bold]'{note_name}'[bold red] not found in '{note_mode}' directory."
         )
-        exit(0)
+        sys.exit(0)
 
     console = Console(force_terminal=True, legacy_windows=True)
 

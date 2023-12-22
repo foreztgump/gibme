@@ -1,5 +1,6 @@
 import httpx
 import json
+import sys
 
 from yaml import load_all, SafeLoader
 from bs4 import BeautifulSoup
@@ -21,7 +22,7 @@ def get_bins():
     except Exception as e:
         console = Console()
         console.print(f"[-] Error: {e}", style="bold red")
-        exit(1)
+        sys.exit(0)
 
 
 def list_bins(home_dir: Path):
