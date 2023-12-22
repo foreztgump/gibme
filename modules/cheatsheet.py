@@ -150,6 +150,9 @@ def print_note(home_dir: Path, note_name: str, note_mode: str):
     print(note_file_path)
     markdown = Path(note_file_path).read_text(encoding="utf-8")
     try:
+        # Set the PAGER environment variable to less -R for rich markdown support
+        if "PAGER" not in os.environ:
+            os.environ["PAGER"] = "less -R"
         with console.pager(styles=True):
             console.print(Markdown(markdown))
     except KeyboardInterrupt:
