@@ -235,7 +235,7 @@ def main():
         print_note(home_dir=home_dir, note_name=name[0], note_mode=args.notes[0])
 
     if args.version:
-        print("[bold cyan]Gibme v0.0.1[/bold cyan]")
+        print("[bold cyan]Gibme v0.0.2[/bold cyan]")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
