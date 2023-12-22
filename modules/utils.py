@@ -226,10 +226,11 @@ def _fuzz_result(name: str, choice: list, fuzz_type: str) -> list:
         console = Console()
         console.print("Did you mean one of these?", style="yellow")
 
-        for name, similarity, index in fuzz_similarity:
-            console.print(f"{name}:", style="green", end=" ")
-            console.print(f"{format(similarity, '.1f')}% similarity", style="cyan")
-        sys.exit(0)
+        # for name, similarity, index in fuzz_similarity:
+        #     console.print(f"{name}:", style="green", end=" ")
+        #     console.print(f"{format(similarity, '.1f')}% similarity", style="cyan")
+        # sys.exit(0)
+        return _user_select(fuzz_similarity)
 
     elif fuzz_type == "token":
         fuzz_similarity = process.extract(
