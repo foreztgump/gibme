@@ -10,6 +10,7 @@ from modules.lolbas import list_exe, lolbas_info
 from modules.shellgen import generate_shell, list_listeners, list_shells
 from modules.shell_data import listenerCommands, shells
 from modules.cheatsheet import list_notes, print_note
+from modules.tldr import tldr
 from rich import print
 
 
@@ -30,8 +31,9 @@ def main():
     gibme -bs bash  Generate a bind shell for bash.
     gibme -rs bash -i 10.10.11.12 -p 9000 -os linux -s /bin/bash -en base64 -l nc   Generate a reverse shell for bash with the specified options.
     gibme -n default "Active Directory"     Print the default note for "Active Directory".
-    gibme -ls bins  List all the available binaries.
-    gibme -ls notes List all the available notes.
+    gibme -t -linux ssh     Print the cheat sheet for ssh on Linux.
+    gibme -ls bins      List all the available binaries.
+    gibme -ls notes     List all the available notes.
     """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -68,6 +70,14 @@ def main():
         metavar=("<default or custom>", "<filename>"),
         required=False,
         help="Print the note. Provide either 'default' or 'custom' as the first argument and the file name as the second argument.",
+    )
+    group.add_argument(
+        "-t",
+        "--tldr",
+        nargs=2,
+        metavar=("<os>", "<command>"),
+        required=False,
+        help="Print the cheat sheet. Provide the operating system as the first argument and the command as the second argument.",
     )
     parser.add_argument(
         "-u",
@@ -233,6 +243,14 @@ def main():
             home_dir=home_dir,
         )
         print_note(home_dir=home_dir, note_name=name[0], note_mode=args.notes[0])
+
+    if args.tldr:
+        tldr = tldr(
+            home_dir=home_dir,
+            operating_system=args.tldr[0],
+            args=args.tldr[1],
+        )
+        tldr.run()
 
     if args.version:
         print("[bold cyan]Gibme v0.0.2[/bold cyan]")

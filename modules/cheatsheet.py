@@ -188,8 +188,6 @@ def print_note(home_dir: Path, note_name: str, note_mode: str):
         sys.exit(0)
 
     console = Console(force_terminal=True, legacy_windows=True)
-
-    print(note_file_path)
     markdown = Path(note_file_path).read_text(encoding="utf-8")
     try:
         # Set the PAGER environment variable to less -R for rich markdown support

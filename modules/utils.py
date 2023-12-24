@@ -1,9 +1,9 @@
 import json
 import re
 import sys
+import httpx
 
 from pathlib import Path
-
 
 # from git import Repo, Blob
 from .gtfobins import get_bins
@@ -73,6 +73,11 @@ def initialize_settings():
         cve_poc_file.touch()
         update_cve_poc(cve_poc_file)
 
+    tldr_tags = gibnme_dir / "tags.json"
+    if not tldr_tags.exists():
+        tldr_tags.touch()
+        update_tlrd_tags(tldr_tags)
+
     settings_file = gibnme_dir / "settings.json"
     if not settings_file.exists():
         settings_file.touch()
@@ -87,25 +92,6 @@ def initialize_settings():
             json.dump(data, f)
 
     print("Settings initialized successfully")
-
-
-# def update_gtfo_local(gibnme_dir: Path):
-#     print('Updating GTFOBins...')
-
-#     with tempfile.TemporaryDirectory() as temp_dir:
-#         repo_url = "https://github.com/GTFOBins/GTFOBins.github.io.git"
-
-#         repo = Repo.clone_from(repo_url, temp_dir, branch='master', depth=1)
-
-#         tree = repo.head.commit.tree
-
-#         for item in tree:
-#             if item.path == '_gtfobins':
-#                 for sub_item in item:
-#                     if isinstance(sub_item, Blob):
-#                         shutil.copy(sub_item.abspath, gibnme_dir / 'gtfobins' / sub_item.name)
-
-#         repo.close()
 
 
 def update_notes(note_dir: Path):
@@ -217,6 +203,21 @@ def update_gibme():
     console.print("[bold green]Gibme updated successfully![/bold green]")
 
 
+def update_tlrd_tags(tldr_tags: Path):
+    if not tldr_tags.exists():
+        initialize_settings()
+    with httpx.Client() as client:
+        url = "https://raw.githubusercontent.com/foreztgump/gibme/main/static/tags.json"
+        response = client.get(url)
+        if response.status_code == 200:
+            with open(tldr_tags, "w") as f:
+                f.write(response.text)
+        else:
+            console = Console()
+            console.print(
+                "\n[bold red]Error: tldr tags is not found. Check your connection or try again later."
+            )
+
 def update_cve_poc(cve_poc_file: Path):
     if not cve_poc_file.exists():
         initialize_settings()
@@ -225,6 +226,7 @@ def update_cve_poc(cve_poc_file: Path):
     data = cve_poc.get_cve_poc()
 
 
+## TODO Rewrite and Refractor this function
 def fuzz_name(
     name: str, type_str: str, home_dir: Path = None, choice_path: Path = None
 ) -> list:
