@@ -254,7 +254,7 @@ def main():
         tldr_result.run()
 
     if args.version:
-        print("[bold cyan]Gibme v0.0.2[/bold cyan]")
+        print("[bold cyan]Gibme v0.1.0[/bold cyan]")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)

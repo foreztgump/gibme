@@ -9,6 +9,7 @@ Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so
 - Binaries from GTFOBins? Gibme got 'em! And it'll print them directly to your CLI, no fuss.
 - Executables from LOLBAS? Gibme is on it! It'll print them out for you, neat and tidy.
 - Need a variety of reverse shells? Gibme is your shell sommelier, ready to serve.
+- tldr project integration: Use `-t` to access community-driven man pages. Example: `gibme -t nmap`.
 - Quick search and print out a note or cheatsheet? Gibme is faster than a caffeinated librarian.
 - Got your own custom notes? Gibme can load them up for you, making it your personalized CLI companion.
 - RapidFuzz integration for swift and effortless searching? Gibme is all over it.
@@ -67,6 +68,7 @@ Replace /path/to/your/notes with the actual path to your note folder. After savi
 
     gibme -rs bash -i 10.10.11.12 -p 9000 -os linux -s /bin/bash -en base64 -l nc   Generate a reverse shell for bash with the specified options.
 
+    gibme -t ssh        Print the cheat sheet for ssh. 
     gibme -n default "Active Directory"     Print the default note for "Active Directory".
     gibme -ls bins  List all the available binaries.
     gibme -ls notes List all the available notes.
