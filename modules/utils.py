@@ -198,8 +198,12 @@ def update_gibme():
 
     console.print("[bold cyan]Updating default notes...[/bold cyan]")
     update_notes(Path(settings["default_notes_dir"]))
-
     console.print("[bold green]Default notes updated successfully![/bold green]")
+
+    console.print("[bold cyan]Updating tldr tags...[/bold cyan]")
+    update_tlrd_tags(Path(gibnme_dir / "tags.json"))
+    console.print("[bold green]tldr tags updated successfully![/bold green]")
+    
     console.print("[bold green]Gibme updated successfully![/bold green]")
 
 
