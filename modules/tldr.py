@@ -20,24 +20,34 @@ class tldr:
         home_dir_path = Path(home_dir)
         tags_list_path = home_dir_path / "tags.json"
 
+
         # Load the tags.json file
         with open(tags_list_path, 'r') as f:
             self.tags_list = json.load(f)
 
+        if self.operating_system is None:
+            list_operating_system = ['linux', 'common']
+        else:
+            list_operating_system = [self.operating_system]
+
         if os_data := next(
-            (item for item in self.tags_list if self.operating_system in item), None
+            (item for item in self.tags_list if any(os in item.keys() for os in list_operating_system)), None
         ):
-            self.tags = [item['tag'] for item in os_data[self.operating_system]]
-            self.file_names = [item['filename'] for item in os_data[self.operating_system]]
+            self.tags = [file['tag'] for os in list_operating_system for file in os_data.get(os, [])]
+            self.file_names = [file['filename'] for os in list_operating_system for file in os_data.get(os, [])]
         else:
             self.tags = []
             self.file_names = []
 
-    # this function will run on default
     def run(self):
-        found = self.search_tldr()
+        found = self.search_tldr() if len(self.args.split(" ")) == 1 else None
         if not found:
-            found = self.fuzz_search()[0]
+            found = self.fuzz_search()
+
+        if not found:
+            self.console.print("\n[bold red]The command is not found.")
+            return None
+
         get_tldr = self.get_tldr(found)
         if get_tldr is None:
             self.console.print("\n[bold red]Error: tldr is not found. Check your connection or try again later.")
@@ -46,11 +56,12 @@ class tldr:
 
     def get_tldr(self, file_name: str):
         base_url = "https://raw.githubusercontent.com/tldr-pages/tldr/master/pages/"
-        os_list = [self.operating_system, "common"] if self.operating_system else ["linux", "common"]
+        os_list = [self.operating_system] if isinstance(self.operating_system, str) else (self.operating_system or ["linux", "common"])
 
         with httpx.Client() as client:
             for os in os_list:
-                response = client.get(f"{base_url}{os}/{file_name}")
+                url = f"{base_url}{os}/{file_name}"
+                response = client.get(url)
                 if response.status_code == 200:
                     return response.text
         return None
@@ -65,16 +76,20 @@ class tldr:
             self.console.print("\n[bold red]Exiting program.")
 
     def search_tldr(self):
-        names_without_ext = [os.path.splitext(filename)[0] for filename in self.file_names]
-        return f"{self.args}.md" if self.args in names_without_ext else None
+        names_with_ext = {os.path.splitext(filename)[0]: filename for filename in self.file_names}
+        return names_with_ext.get(self.args, None)
     
     def fuzz_search(self):
-        if not self.operating_system:
-            self.operating_system = 'linux'
         results_filenames = []
         for os_data in self.tags_list:
-            if self.operating_system in os_data or 'common' in os_data:
-                for file_dict in (os_data.get(self.operating_system, []) if self.operating_system else []) + os_data.get('common', []):
+            if self.operating_system and self.operating_system in os_data:
+                for file_dict in os_data.get(self.operating_system, []):
+                    file_tags = file_dict.get('tag', '')
+                    score = process.extractOne(self.args, [file_tags], scorer=fuzz.token_set_ratio ,processor=fuzz_utils.default_process)
+                    if score[1] > 90:
+                        results_filenames.append(file_dict['filename'])
+            elif 'common' in os_data:
+                for file_dict in os_data.get('common', []):
                     file_tags = file_dict.get('tag', '')
                     score = process.extractOne(self.args, [file_tags], scorer=fuzz.token_set_ratio ,processor=fuzz_utils.default_process)
                     if score[1] > 90:
@@ -82,11 +97,10 @@ class tldr:
 
         if results_filenames: 
             if len(results_filenames) > 1:
-                return self.user_select(results_filenames)
+                return self.user_select(results_filenames)[0]
             else: 
                 return results_filenames[0] 
-        return None 
-        
+        return None
 
     def user_select(self, choice_list) -> list:
         self.console.print("[bold cyan]Please choose one of the following options:")

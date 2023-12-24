@@ -31,7 +31,7 @@ def main():
     gibme -bs bash  Generate a bind shell for bash.
     gibme -rs bash -i 10.10.11.12 -p 9000 -os linux -s /bin/bash -en base64 -l nc   Generate a reverse shell for bash with the specified options.
     gibme -n default "Active Directory"     Print the default note for "Active Directory".
-    gibme -t -linux ssh     Print the cheat sheet for ssh on Linux.
+    gibme -t ssh        Print the cheat sheet for ssh. 
     gibme -ls bins      List all the available binaries.
     gibme -ls notes     List all the available notes.
     """,
@@ -74,10 +74,10 @@ def main():
     group.add_argument(
         "-t",
         "--tldr",
-        nargs=2,
-        metavar=("<os>", "<command>"),
+        nargs=1,
+        metavar=("<command>"),
         required=False,
-        help="Print the cheat sheet. Provide the operating system as the first argument and the command as the second argument.",
+        help="Print the cheat sheet. Provide the operating system as the first argument (optional) and the command as the second argument.",
     )
     parser.add_argument(
         "-u",
@@ -114,10 +114,11 @@ def main():
     parser.add_argument(
         "-os",
         "--operating_system",
-        required=False,
-        default="all",
+        nargs='*',
+        default=[None],
         metavar="<os>",
-        help="Specify Operating System for reverse shell.",
+        help="Specify Operating System for reverse shell or tldr command.",
+        choices=["android", "freebsd", "linux", "netbsd", "openbsd", "osx", "sunos", "windows", None],
     )
     parser.add_argument(
         "-en",
@@ -172,20 +173,17 @@ def main():
         update_gibme()
 
     if args.reverse_shell:
-        if args.operating_system.lower() == "linux":
+        if args.operating_system[0] is None:
+            os = "all"
+
+        elif args.operating_system[0].lower() == "linux":
             os = "linux"
 
-        elif args.operating_system.lower() == "windows":
+        elif args.operating_system[0].lower() == "windows":
             os = "windows"
 
-        elif args.operating_system.lower() == "mac":
+        elif args.operating_system[0].lower() == "mac":
             os = "mac"
-
-        elif args.operating_system.lower() == "win":
-            os = "windows"
-
-        else:
-            os = "all"
 
         name_list = fuzz_name(name=args.reverse_shell, type_str="reverse")
         generate_shell(
@@ -245,12 +243,15 @@ def main():
         print_note(home_dir=home_dir, note_name=name[0], note_mode=args.notes[0])
 
     if args.tldr:
-        tldr = tldr(
+        operating_system = args.operating_system[0] if args.operating_system else None
+        command = args.tldr[-1]  # the command is always the last argument
+
+        tldr_result = tldr(
             home_dir=home_dir,
-            operating_system=args.tldr[0],
-            args=args.tldr[1],
+            operating_system=operating_system,
+            args=command,
         )
-        tldr.run()
+        tldr_result.run()
 
     if args.version:
         print("[bold cyan]Gibme v0.0.2[/bold cyan]")
