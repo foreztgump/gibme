@@ -124,4 +124,5 @@ SOFTWARE.
 - [RapidFuzz](https://github.com/maxbachmann/RapidFuzz/)
 - [rich](https://github.com/Textualize/rich)
 - [httpx](https://github.com/encode/httpx)
+- [tldr](https://github.com/tldr-pages/tldr/tree/main)
 
