@@ -13,7 +13,7 @@ class TLDR(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Input(placeholder="Search for TLDR Pages")
+        yield Input(placeholder="Search for TLDR Pages", max_length=32)
         with Horizontal(id="checkbox"):
             yield Checkbox("Common", "True", id="common")
             yield Checkbox("Linux", id="linux")

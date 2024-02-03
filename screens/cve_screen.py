@@ -1,4 +1,3 @@
-import json
 from textual import work
 from textual.app import ComposeResult
 from textual.screen import Screen
@@ -14,7 +13,7 @@ class CVE(Screen):
         def compose(self) -> ComposeResult:
             yield Header()
             yield Footer()
-            yield Input(placeholder="Search for CVEs")
+            yield Input(placeholder="Search for CVEs", max_length=100)
             with Container(id="app-grid"):
                 with VerticalScroll(id="left-pane"):
                     yield ListView(id="cve-list")
