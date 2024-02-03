@@ -5,3 +5,6 @@ rapidfuzz
 prettytable
 PyYAML
 rich
+textual
+clipman
+meilisearch-python-sdk
