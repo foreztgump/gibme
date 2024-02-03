@@ -1,82 +1,31 @@
-# Gibme - Unleashing the CLI Superpowers!
+# Gibme - CTF and Pentester Sidekick
 
-Gibme is your CLI sidekick, ready to generate shells, hunt down binaries, and so much more. With the power of GTFOBins and LOLBAS at its fingertips, it's like having your own personal information superhero right in your terminal.
-
-![Gibme Showcase](./imgs/gibme.gif)
+![Gibme Showcase]()
 
 ## Features
 
-- Binaries from GTFOBins? Gibme got 'em! And it'll print them directly to your CLI, no fuss.
-- Executables from LOLBAS? Gibme is on it! It'll print them out for you, neat and tidy.
-- Need a variety of reverse shells? Gibme is your shell sommelier, ready to serve.
-- tldr project integration: Use `-t` to access community-driven man pages. Example: `gibme -t nmap`.
-- Quick search and print out a note or cheatsheet? Gibme is faster than a caffeinated librarian.
-- Got your own custom notes? Gibme can load them up for you, making it your personalized CLI companion.
-- RapidFuzz integration for swift and effortless searching? Gibme is all over it.
-- Easy updates.
-- **Coming Soon**: CVE Search with PoC Suggestions - Gibme will soon be able to search for Common Vulnerabilities and Exposures (CVEs) and suggest potential Proof of Concepts (PoCs) for them.
+- Binaries from GTFOBins
+- Executables from LOLBAS
+- Reverse Shell Generator
+- tldr project integration
+- CVE Search with POCs from github
+- Cheat Sheet feature is coming soon
 
 ## Getting Started
 
-The easiest way to get started is to download the precompiled binary for Linux. You can find it in the [release section](https://github.com/foreztgump/gibme/releases) of the Gibme repository.
-
-After downloading the binary, you'll need to make it executable and move it to a directory in your PATH. Here's how you can do that:
-
+Installation:
 ```sh
-# Navigate to the directory where you downloaded the binary
-cd /path/to/download/directory
-
-# Make the binary executable
-chmod +x gibme
-
-# Move the binary to a directory in your PATH, e.g., /usr/local/bin
-sudo mv gibme /usr/local/bin/
-
-Now, you should be able to run Gibme from anywhere in your terminal by simply typing gibme.
+pipx install gibme
+pipx ensurepath
 ```
 
-For those who prefer a hands-on approach, you can clone the repository and set up the required Python packages:
+Development:
 
 ```sh
 git clone https://github.com/foreztgump/gibme.git
 cd gibme
 pip install -r requirements.txt
 ```
-
-## Configuration
-
-When you first run Gibme, it will create a `.gibme` directory in your home folder. This directory contains a `settings.json` file, which is used to store your personal configurations.
-
-One of the configurations you can set is the path to your custom note folder. This allows Gibme to load your personal notes, making it a truly personalized CLI tool.
-
-To set the path to your custom note folder, open the `settings.json` file in a text editor and set the value of the `custom_notes_dir` key to the path of your note folder. Here's an example:
-
-```json
-{
-  "custom_notes_dir": "/path/to/your/notes_folder"
-}
-
-Replace /path/to/your/notes with the actual path to your note folder. After saving the settings.json file, Gibme will load your custom notes the next time you run it. 
-```
-
-## How to Use
-    gibme -u        Update Gibme.
-    gibme -b less   Search for the binary 'less' on GTFOBins.
-    gibme -e cmd    Search for the executable 'cmd' on LOLBAS.
-    gibme -rs bash  Generate a reverse shell for bash.
-    gibme -bs bash  Generate a bind shell for bash.
-
-    gibme -rs bash -i 10.10.11.12 -p 9000 -os linux -s /bin/bash -en base64 -l nc   Generate a reverse shell for bash with the specified options.
-
-    gibme -t ssh        Print the cheat sheet for ssh. 
-    gibme -n default "Active Directory"     Print the default note for "Active Directory".
-    gibme -ls bins  List all the available binaries.
-    gibme -ls notes List all the available notes.
-place-holder-picture
-
-place-holder-picture
-
-place-holder-picture
 
 
 ## Join the Effort
@@ -125,4 +74,4 @@ SOFTWARE.
 - [rich](https://github.com/Textualize/rich)
 - [httpx](https://github.com/encode/httpx)
 - [tldr](https://github.com/tldr-pages/tldr/tree/main)
-
+- [trickest](https://github.com/trickest/cve/)
