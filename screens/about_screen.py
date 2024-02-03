@@ -8,15 +8,15 @@ class About(Screen):
     ABOUT_MARKDOWN = """\
 # About Gibme
 
-Gibme is a tool developed by [foreztgump](https://github.com/foreztgump).
+Gibme is a tool developed by [foreztgump (https://github.com/foreztgump)](https://github.com/foreztgump).
 
 ## Version
 
-The current version of Gibme is 0.7.0.
+The current version of Gibme is 0.7.11
 
 ## Project Page
 
-For more information about Gibme, visit the [project page](https://github.com/foreztgump/gibme).
+For more information about Gibme, visit the [project page (https://github.com/foreztgump/gibme)](https://github.com/foreztgump/gibme).
 """
 
     def compose(self) -> ComposeResult:
