@@ -15,7 +15,7 @@ class LOL(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Input(placeholder="Search for LOL Bins")
+        yield Input(placeholder="Search for LOL Bins", max_length=32)
         with VerticalScroll(id="results-container"):
             yield Markdown(id="results")
 

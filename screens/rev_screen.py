@@ -1,7 +1,6 @@
 import httpx
 import ipaddress
 import execjs
-import pyperclip
 from textual import on
 from textual.app import ComposeResult
 from textual.screen import Screen
@@ -28,27 +27,23 @@ class Rev(Screen):
         yield Header()
         yield Footer()
         with HorizontalScroll(id="border"):
-            with Vertical():
-                yield Input(placeholder="IP Address", id="input-ip", restrict=r"^[0-9.]*$")
-            with Vertical():
-                yield Input(placeholder="Port", id="input-port", restrict=r"^(6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{0,3}|0)$")
-        
-            with Vertical():
-                with Horizontal():
-                    with Vertical():
-                        yield Label(id="listen-label")
-                    with Vertical(id="copy-box"):
-                        yield Button("Copy", id="copy-listener")
+            with Vertical(id="ip-container"):
+                yield Input(placeholder="IP Address", id="input-ip", restrict=r"^[0-9.]*$", max_length=24)
+            with Vertical(id="port-container"):
+                yield Input(placeholder="Port", id="input-port", restrict=r"^(6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{0,3}|0)$", max_length=6)
             
-            with Vertical():
+            with Vertical(id="listener-selection-container"):
                 yield Select([], prompt="Select Listener", id="select-listener")
+
+            with HorizontalScroll(id="listner-container"):
+                yield TextArea(id="listen-text")
                 
         with HorizontalScroll(id="results-container"):
             with TabbedContent():
                 with TabPane("Reverse", id="reverse"):
                     with Horizontal():
                         with Vertical(id="left-bottom"):
-                            yield Input(placeholder="Search Name", id="reverse-input-search")
+                            yield Input(placeholder="Search Name", id="reverse-input-search", max_length=64)
                             yield ListView(id="reverse-shell-list")
                         with Vertical():
                             with Horizontal(id="checkbox"):
@@ -59,7 +54,7 @@ class Rev(Screen):
                 with TabPane("Bind", id="bind"):
                     with Horizontal():
                         with Vertical(id="left-bottom"):
-                            yield Input(placeholder="Search Name", id="bind-input-search")
+                            yield Input(placeholder="Search Name", id="bind-input-search", max_length=64)
                             yield ListView(id="bind-shell-list")
                         with Vertical():
                             with Horizontal(id="checkbox"):
@@ -69,7 +64,7 @@ class Rev(Screen):
                 with TabPane("MSFVenom", id="msfvenom"):
                     with Horizontal():
                         with Vertical(id="left-bottom"):
-                            yield Input(placeholder="Search Name", id="msfvenom-input-search")
+                            yield Input(placeholder="Search Name", id="msfvenom-input-search", max_length=64)
                             yield ListView(id="msfvenom-list")
                         with Vertical():
                             with Horizontal(id="checkbox"):
@@ -79,7 +74,7 @@ class Rev(Screen):
                 with TabPane("hoaxShell", id="hoax"):
                     with Horizontal():
                         with Vertical(id="left-bottom"):
-                            yield Input(placeholder="Search Name", id="hoax-input-search")
+                            yield Input(placeholder="Search Name", id="hoax-input-search", max_length=64)
                             yield ListView(id="hoax-shell-list")
                         with Vertical():
                             with Horizontal(id="checkbox"):
@@ -190,8 +185,9 @@ class Rev(Screen):
 
         # get selected listener
         if select_id == 'select-listener':
-            self.selected_listener = self.query_one('#select-listener', Select).value
-            self.update_listener(self.selected_listener)
+            selected_listener = self.query_one('#select-listener', Select).value
+            if selected_listener != Select.BLANK:
+                self.update_listener(selected_listener)
         elif select_id == 'select-reverse':
             self.selected_shell = self.query_one('#select-reverse', Select).value
 
@@ -216,16 +212,23 @@ class Rev(Screen):
             if id != self.active_tab:
                 self.query_one(f"#{id}-input-search", Input).value = ''
 
-    def update_listener(self, listener: str) -> None:
+    def update_listener(self, selected_listener: str) -> None:
         # get match listener data from listener list
-        listener_data = [listener for listener in self.rev_data['rsgData']['listenerCommands'] if listener[0] == self.selected_listener][0]
+        listener_data = [listener for listener in self.rev_data['rsgData']['listenerCommands'] if listener[0] == selected_listener][0]
 
+
+        if listener_data:
         # edit port and display listener data
-        self.listener_text = listener_data[1].replace('{port}', self.port)
-        if int(self.port) < 1024:
-            self.listener_text = f'sudo {self.listener_text}'
+            if '{port}' in listener_data[1]:
+                self.listener_text = listener_data[1].replace('{port}', self.port)
+                if int(self.port) < 1024:
+                    self.listener_text = f'sudo {self.listener_text}'
+            else:
+                self.listener_text = listener_data[1]
+        else:
+            self.listener_text = 'Listener not found'
 
-        self.query_one("#listen-label", Label).update(f"Listener: {self.listener_text}")
+        self.query_one("#listen-text", TextArea).load_text(self.listener_text)
 
 
     def update_results(self, list_id: str, rev_shell: str, shell:str) -> None:
@@ -252,7 +255,7 @@ class Rev(Screen):
             shell_data = shell_data.replace('{ip}', self.ip)
         if '{port}' in shell_data:
             shell_data = shell_data.replace('{port}', self.port)
-        if '{shell}' in shell_data:
+        if '{shell}' in shell_data and shell != Select.BLANK:
             shell_data = shell_data.replace('{shell}', shell)
 
         self.query_one(f"#results-{tab}", TextArea).clear()

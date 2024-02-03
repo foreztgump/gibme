@@ -42,6 +42,19 @@ Input {
     height: auto;    
 }
 
+Rev #ip-container {
+    width: 10%;
+}
+Rev #port-container {
+    width: 10%;
+}
+Rev #listner-container {
+    width: 70%;
+}
+Rev #listener-selection-container {
+    width: 10%;
+}
+
 Rev #input-ip {
     margin: 0 0 0 0;
     width: 100%;
@@ -69,8 +82,8 @@ Rev #hoax-input-search {
     width: 100%;
 }
 
-Rev #listen-label {
-    margin: 0 0 0 5;
+Rev #listen-text {
+    margin: 0 0 0 0;
 }
 
 
@@ -145,6 +158,12 @@ Rev #border {
     height: 20%;
     overflow: hidden auto;
     border: tall $background;
+}
+
+Rev #app-grid {
+    layout: grid;
+    grid-size: 1;
+    grid-rows: 20% 80%;
 }
 
 TLDR #results-container {

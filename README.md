@@ -8,7 +8,7 @@
 - Executables from LOLBAS
 - Reverse Shell Generator
 - tldr project integration
-- CVE Search with POCs from github
+- CVE Search with POCs from github. Front-end of this is here at [CVE-Search](https://foreztgump.github.io/cve_search/)
 - Cheat Sheet feature is coming soon
 
 ## Getting Started
@@ -17,6 +17,11 @@ Installation:
 ```sh
 pipx install gibme
 pipx ensurepath
+```
+
+Upgrade:
+```sh
+pipx upgrade gibme
 ```
 
 Development:

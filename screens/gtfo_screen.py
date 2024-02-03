@@ -15,7 +15,7 @@ class GTFO(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Footer()
-        yield Input(placeholder="Search for GTFO Bins")
+        yield Input(placeholder="Search for GTFO Bins", max_length=24)
         with VerticalScroll(id="results-container"):
             yield Markdown(id="results")
 
