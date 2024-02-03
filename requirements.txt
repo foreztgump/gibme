@@ -2,9 +2,8 @@ lxml
 beautifulsoup4
 httpx
 rapidfuzz
-prettytable
 PyYAML
-rich
 textual
-clipman
 meilisearch-python-sdk
+pyperclip
+PyExecJS

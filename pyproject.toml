@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Gibme"
+version = "0.7.11"
+authors = [
+  { name="Foreztgump", email="foreztgump#git@slmail.me" },
+]
+description = "A TUI tool to help make life easier for CTF and pentest"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    # "Operating System :: OS Independent",
+]
+dependencies = [
+    "lxml",
+    "beautifulsoup4",
+    "httpx",
+    "rapidfuzz",
+    "PyYAML",
+    "textual",
+    "meilisearch-python-sdk",
+    "PyExecJS",
+    "pyperclip",
+]
+
+
+[tool.hatch.build.targets.wheel.force-include]
+"./screens/about_screen.py" = "screens/about_screen.py"
+"./screens/cheat_screen.py" = "screens/cheat_screen.py"
+"./screens/cve_screen.py" = "screens/cve_screen.py"
+"./screens/gtfo_screen.py" = "screens/gtfo_screen.py"
+"./screens/lol_screen.py" = "screens/lol_screen.py"
+"./screens/rev_screen.py" = "screens/rev_screen.py"
+"./screens/tldr_screen.py" = "screens/tldr_screen.py"
+"./gibme.tcss" = "gibme.tcss"
+
+
+[project.urls]
+Homepage = "https://github.com/foreztgump/gibme"
+Issues = "https://github.com/foreztgump/gibme/issues"
+
+[project.scripts]
+gibme = 'gibme:main'

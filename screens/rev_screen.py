@@ -202,7 +202,7 @@ class Rev(Screen):
     async def on_list_view_selected(self, event: ListView.Selected) -> None:
         self.list_id = event.list_view.id
         #self.query_one(Markdown).update(f'{event.item.children[0].id}')
-        self.selected_rev_shell = event.item.children[0].id
+        self.selected_rev_shell = event.item.children[0].name
 
         if self.selected_rev_shell:
             self.update_results(self.list_id, self.selected_rev_shell, self.selected_shell)
@@ -287,7 +287,7 @@ class Rev(Screen):
     def _update_list_view(self, list_id: str, shell_list: list) -> None:
         list_view = self.query_one(f'#{list_id}', ListView)
         list_view.clear()
-        list_view.extend([ListItem(Label(shell, id=shell)) for shell in shell_list])
+        list_view.extend([ListItem(Label(shell, name=shell)) for shell in shell_list])
         list_view.index = 0
 
 

@@ -74,7 +74,9 @@ class GibmeApp(App[None]):
     def on_mount(self) -> None:
         self.push_screen(Gibme())
     
-
-if __name__ == "__main__":
+def main():
     app = GibmeApp()
     app.run()
+
+if __name__ == "__main__":
+    main()
