@@ -27,6 +27,7 @@ cd gibme
 pip install -r requirements.txt
 ```
 
+**To copy any text in gibme hold shift**
 
 ## Join the Effort
 
@@ -36,6 +37,7 @@ pip install -r requirements.txt
 
 ## Upcoming Tasks
 - Code refactoring is on the horizon!
+- Need cleanup as well
 
 ## License
 
