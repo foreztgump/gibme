@@ -27,6 +27,7 @@ cd gibme
 pip install -r requirements.txt
 ```
 
+**To copy any text in gibme hold shift**
 
 ## Join the Effort
 
