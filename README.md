@@ -1,6 +1,6 @@
 # Gibme - CTF and Pentester Sidekick
 
-![Gibme Showcase]()
+![Gibme Showcase](/imgs/gibme.gif)
 
 ## Features
 
