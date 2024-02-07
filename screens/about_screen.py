@@ -12,7 +12,7 @@ Gibme is a tool developed by [foreztgump (https://github.com/foreztgump)](https:
 
 ## Version
 
-The current version of Gibme is 0.7.14
+The current version of Gibme is 0.7.15
 
 ## Project Page
 

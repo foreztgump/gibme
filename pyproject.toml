@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "Gibme"
-version = "0.7.14"
+version = "0.7.15"
 authors = [
   { name="Foreztgump", email="foreztgump#git@slmail.me" },
 ]
@@ -36,6 +36,7 @@ dependencies = [
 "./screens/lol_screen.py" = "screens/lol_screen.py"
 "./screens/rev_screen.py" = "screens/rev_screen.py"
 "./screens/tldr_screen.py" = "screens/tldr_screen.py"
+"./static/data.py" = "static/data.py"
 "./gibme.tcss" = "gibme.tcss"
 
 
