@@ -1,6 +1,5 @@
-import httpx
 import ipaddress
-import execjs
+from static.data import data
 from textual import on
 from textual.app import ComposeResult
 from textual.screen import Screen
@@ -108,13 +107,6 @@ class Rev(Screen):
             self.selected_rev_shell = self.query_one(f'#{self.list_id}', ListView).children[0].id
 
 
-    async def on_button_pressed(self, event: Button.Pressed) -> None:
-        button_id = event.button.id
-        if button_id == 'copy-listener':
-            # get listener text from label and remove Listener: from text
-            pyperclip.copy(self.listener_text)
-
-
     async def on_checkbox_changed(self) -> None:
         # get checked boxes
         checkboxes = self.query(Checkbox)
@@ -203,6 +195,7 @@ class Rev(Screen):
         if self.selected_rev_shell:
             self.update_results(self.list_id, self.selected_rev_shell, self.selected_shell)
 
+
     @on(TabbedContent.TabActivated)
     def clear_input(self) -> None:
         self.active_tab = self.query_one(TabbedContent).active
@@ -211,6 +204,7 @@ class Rev(Screen):
         for id in tab_id:
             if id != self.active_tab:
                 self.query_one(f"#{id}-input-search", Input).value = ''
+
 
     def update_listener(self, selected_listener: str) -> None:
         # get match listener data from listener list
@@ -362,18 +356,14 @@ class Rev(Screen):
 
     async def parse_rev_data(self) -> list:
         try:
-            runtime = execjs.get()
-            async with httpx.AsyncClient() as client:
-                response = await client.get("https://raw.githubusercontent.com/0dayCTF/reverse-shell-generator/main/js/data.js")
-                context = runtime.compile(response.text)
-                commands = {
-                'reverseShellCommands': context.eval('reverseShellCommands'),
-                'bindShellCommands': context.eval('bindShellCommands'),
-                'msfvenomCommands': context.eval('msfvenomCommands'),
-                'hoaxShellCommands': context.eval('hoaxShellCommands'),
-                'rsgData': context.eval('rsgData')
+            commands = {
+                'reverseShellCommands': data['reverseShellCommands'],
+                'bindShellCommands': data['bindShellCommands'],
+                'msfvenomCommands': data['msfvenomCommands'],
+                'hoaxShellCommands': data['hoaxShellCommands'],
+                'rsgData': data['rsgData']
             }
             return commands
 
         except Exception as e:
-            self.query_one("#results", Markdown).update(f"**Error getting reverse shell data**\n\nError: {e}")
+            self.query_one("#results-reverse", TextArea).load_text(f'Error: {e}')
